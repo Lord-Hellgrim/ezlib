@@ -1,0 +1,12 @@
+[package]
+name = "ezlib"
+version = "0.1.0"
+license = "MIT OR Apache-2.0"
+description = "Easy little database"
+homepage = "https://github.com/lord-hellgrim/ezlib"
+repository = "https://github.com/lord-hellgrim/ezlib"
+readme = "README.md"
+
+[dependencies]
+ezcbor = "0.1.4"
+fnv = "1.0.7"
