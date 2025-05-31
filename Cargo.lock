@@ -11,7 +11,8 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 [[package]]
 name = "ezcbor"
 version = "0.1.4"
-source = "git+https://github.com/lord-hellgrim/ezcbor?branch=master#649a3077b6c152e4de050e0d7fa25e83e2450ad0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d3a4e2a1d19719c1f319c6c3fc4837f724dbb285f1e4761253c2a889c3d3f325"
 
 [[package]]
 name = "ezlib"

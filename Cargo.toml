@@ -9,7 +9,7 @@ repository = "https://github.com/lord-hellgrim/ezlib"
 readme = "README.md"
 
 [dependencies]
-ezcbor = { git = "https://github.com/lord-hellgrim/ezcbor", branch = "master" }
+ezcbor = "0.1.4"
 fnv = "1.0.7"
 rand = "0.8.5"
 
