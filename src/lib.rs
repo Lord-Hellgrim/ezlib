@@ -3,6 +3,7 @@
 
 use std::alloc::{alloc, dealloc, Layout};
 use std::arch::asm;
+use std::convert::TryFrom;
 use std::fmt::Display;
 use std::ops::{Index, IndexMut};
 use std::simd;
@@ -1530,3 +1531,145 @@ impl<T: Null + Clone + Debug + Display + Ord + Eq + Sized, const N: usize> Displ
     }
 }
 
+
+#[cfg(test)]
+mod tests {
+
+    use rand::Rng;
+
+    use super::*;
+
+    #[test]
+    fn test_tests() {
+        println!("Test!");
+    }
+
+
+    #[test]
+    fn test_bytes_to_str() {
+        let bytes = [0,0,0,0,0,49,50,51,0,0,0,0,0];
+        let x = bytes_to_str(&bytes).unwrap();
+        assert_eq!("123", x);
+    }
+
+    #[test]
+    fn test_encode_hex() {
+        let byte = [0u8];
+        let x = encode_hex(&byte);
+        println!("{}", x);
+    }
+
+    #[test]
+    fn test_median() {
+        let data = [3, 1, 6, 1, 5, 8, 1, 8, 10, 11];
+    
+        let med = median_i32_slice(&data);
+        assert_eq!(med, 5.5);
+    }
+
+    #[test]
+    fn test_mode() {
+        let data = [3, 1, 6, 1, 5, 8, 1, 8, 10, 11];
+    
+        let mode = mode_i32_slice(&data);
+        assert_eq!(mode, 1);
+
+        let text_data = [KeyString::from("3"), KeyString::from("1"), KeyString::from("6"), KeyString::from("1"), KeyString::from("5"), KeyString::from("8"), KeyString::from("1"), KeyString::from("8"), KeyString::from("10"), KeyString::from("11")];
+        let text_mode = mode_string_slice(&text_data);
+        assert_eq!(text_mode, KeyString::from("1"));
+    }
+
+    #[test]
+    fn test_mean() {
+        let data = [3, 1, 6, 1, 5, 8, 1, 8, 10, 11];
+    
+        let mean = mean_i32_slice(&data);
+        assert_eq!(mean, 5.4);
+    }
+
+    #[test]
+    fn test_stdev() {
+        let data = [3, 1, 6, 1, 5, 8, 1, 8, 10, 11, 3, 1, 6, 1, 5, 8, 1, 8, 10, 11];
+        let stdev = stdev_i32_slice(&data);
+        println!("stdev: {}", stdev);
+        assert!(stdev > 3.611 && stdev < 3.612);
+    }
+
+    #[test]
+    fn test_sum_i32_slice() {
+        let data = [3, 6, 9];
+        let sum = sum_i32_slice(&data);
+        println!("sum: {}", sum);
+        assert!(sum == 18);
+    }
+
+    #[test]
+    fn test_sum_f32_slice() {
+        let data = [3.0, 6.0, 9.0];
+        let sum = sum_f32_slice(&data);
+        println!("sum: {}", sum);
+        assert!(sum == 18.0);
+    }
+
+    #[test]
+    fn test_free_list_vec() {
+        let mut list = FreeListVec {
+            list: Vec::new(),
+            free_list: FnvHashSet::default(),
+        };
+
+        for i in 0..2000 {
+            list.add(ptr(i));
+        }
+
+        for i in 0..2000 {
+            let index = list.remove(ptr(i));
+            let new_index = list.add(ptr(999));
+
+            assert_eq!(index, new_index);
+        }
+    }
+
+    #[test]
+    fn test_fixed_list() {
+        let mut list1: FixedList<Pointer, 100> = FixedList::new();
+        let mut list2: FixedList<Pointer, 100> = FixedList::new();
+
+        let mut removes: Vec<usize> = Vec::new();
+        let mut rng = rand::thread_rng();
+        
+        let upper_bound: usize = rng.gen_range(1..100);
+        println!("upper_bounds: {}", upper_bound);
+        for _ in 0..upper_bound {
+            let num = rng.gen_range(0..100);
+            if removes.contains(&num) {
+                continue
+            } else {
+                removes.push(num);
+            }
+        }
+
+        // removes = vec![6,4,2];
+        println!("removes: {:?}", removes);
+        removes.sort();
+        removes = removes.into_iter().rev().collect();
+
+        for i in 0..100 {
+            let num = rand::random::<usize>();
+            list1.push(ptr(num));
+            if removes.contains(&i) {
+                continue
+            } else {
+                list2.push(ptr(num));
+            }
+        }
+
+        for i in removes {
+            list1.remove(i);
+        }
+
+        println!("list1.len(): {}\nlist2.len(): {}", list1.len(), list2.len());
+
+        assert_eq!(list1, list2);
+    }
+}

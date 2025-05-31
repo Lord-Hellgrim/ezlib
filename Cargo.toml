@@ -1,6 +1,7 @@
 [package]
 name = "ezlib"
 version = "0.1.0"
+edition = "2024"
 license = "MIT OR Apache-2.0"
 description = "Easy little database"
 homepage = "https://github.com/lord-hellgrim/ezlib"
@@ -8,5 +9,8 @@ repository = "https://github.com/lord-hellgrim/ezlib"
 readme = "README.md"
 
 [dependencies]
-ezcbor = "0.1.4"
+ezcbor = { git = "https://github.com/lord-hellgrim/ezcbor", branch = "master" }
 fnv = "1.0.7"
+rand = "0.8.5"
+
+[dev-dependencies]
